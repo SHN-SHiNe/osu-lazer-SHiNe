@@ -1,0 +1,69 @@
+Mania双背景系统架构图
+=====================================
+
+DualBackgroundManager (双背景管理器)
+├── BackgroundScreenBeatmap (主背景层)
+│   └── DimmableBackground (UserDimContainer)
+│       ├── dimContent (Container) - 暗化效果容器
+│       │   └── AudioReactiveBeatmapBackground
+│       │       ├── Sprite (基础背景图片)
+│       │       └── storyboardContainer (AudioContainer)
+│       │           └── DrawableStoryboard (故事板内容)
+│       │               ├── 图片元素
+│       │               ├── 视频元素
+│       │               └── 动画元素
+│       └── [BufferedContainer模糊效果]
+│
+└── BackgroundScreenBeatmap_Mania (Mania背景层)
+    └── DimmableBackground (UserDimContainer)
+        ├── dimContent (Container) - 暗化效果容器
+        └── stageMaskContainer (Container) - 舞台区域遮罩
+            ├── Masking = true
+            ├── ClipToBounds = true
+            ├── Position = 舞台区域位置
+            ├── Size = 舞台区域大小
+            └── AudioReactiveBeatmapBackground
+                ├── Sprite (基础背景图片)
+                └── storyboardContainer (AudioContainer)
+                    └── DrawableStoryboard (故事板内容)
+                        ├── 图片元素
+                        ├── 视频元素
+                        └── 动画元素
+
+配置系统
+========
+OsuSetting 枚举:
+├── ManiaBackgroundDimLevel (Mania背景暗化级别)
+├── ManiaBackgroundBlurLevel (Mania背景模糊级别)
+└── EnableManiaBackgroundLayer (启用Mania背景层开关)
+
+设置界面
+========
+ManiaBackgroundSettings:
+├── 启用Mania独立背景层 (复选框)
+├── Mania背景暗化 (滑杆 0-100%)
+└── Mania背景模糊 (滑杆 0-100%)
+
+工作流程
+========
+1. 用户启用Mania背景层
+2. DualBackgroundManager显示Mania背景层
+3. 系统检测ManiaPlayfield的舞台区域
+4. 创建舞台区域遮罩
+5. Mania背景内容只在遮罩区域内显示
+6. 用户可以通过设置独立调整Mania背景的模糊和暗化
+7. 主背景和Mania背景具有完全独立的参数控制
+
+渲染顺序
+========
+1. 主背景层 (完整屏幕)
+2. Mania背景层 (舞台区域遮罩)
+3. ManiaPlayfield (游戏元素)
+4. UI元素 (HUD, 分数等)
+
+性能优化
+========
+├── 条件渲染 (只在启用时渲染Mania背景)
+├── 智能缓存 (BufferedContainer缓存)
+├── 动态分辨率 (根据模糊强度调整)
+└── 共享音频分析 (避免重复计算)

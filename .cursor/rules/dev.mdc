@@ -1,0 +1,9 @@
+---
+alwaysApply: true
+---
+使用一下命令构建运行
+dotnet run --project osu.Desktop -c Release
+
+dotnet build osu.Desktop -c Release
+
+使用Logger.Log添加调试日志
